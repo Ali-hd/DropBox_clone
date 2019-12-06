@@ -20,8 +20,11 @@ router.post('/',(req,res)=>{
             Folder.create(newFolder)
             .then(folder=>res.send("folder created" + newFolder.name))
             .catch(err=>res.send(err))
+            res.json({msg :"folder created success"})
         }
-        else{res.send('folder with that name already exist')}
+        else{
+            res.json({msg :"folder with that name already exist"})
+        }
     })
     .catch(err=>res.send(err))
     

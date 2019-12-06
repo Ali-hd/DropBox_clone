@@ -12,6 +12,7 @@ state={
     folderId:"",
     folderImg:"",
     folderDate:"",
+    error:"",
   }
   onChange = (e)=>{
     this.setState({
@@ -21,8 +22,12 @@ state={
   submit = (e)=>{
     e.preventDefault()
   axios.post('http://localhost:5000/', this.state)
-  .then(res =>
-     console.log(res))
+  .then(res =>{
+    if (res.data.msg == "folder with that name already exist"){
+        this.setState({error : "Error: Folder with that name already exist, Please use a different name"})
+          }else if(res.data.msg == "folder created success"){
+        this.setState({error : ""})
+          }})
   .catch(err => console.log(err))
   }
   componentDidMount = () => {
@@ -44,9 +49,11 @@ componentDidUpdate = () => {
       this.setState({folders : res.data})
   })
   .catch(error => {console.log(error) })
+ 
 }
 
   render() {
+     
     return (
       <div>
         <Form onSubmit = {this.submit} action='http://locahost:5000/' method="post" style={{ width: '50%', margin: '100px auto 50px auto' }}>
@@ -56,12 +63,14 @@ componentDidUpdate = () => {
             <Form.Text className="text-muted">
             </Form.Text>
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="outline-secondary" block type="submit" style={{width:'100px', margin:'0 auto'} }> 
             Submit
   </Button>
         </Form>
+        {this.state.error.length>0? 
+        <h4 style={{textAlign:'center', marginTop:'-40px', marginBottom:'20px'}}>{this.state.error}</h4>:null}
 
-        <div style={{ border: '2px solid black' }} className="ui four column doubling stackable grid center aligned container">
+        <div style={{ border: '2px solid black', backgroundColor:'#e8e7e6'}} className="ui four column doubling stackable grid center aligned container">
 
           {this.state.folders.map((data)=>{
             return <div className="column">
@@ -70,7 +79,7 @@ componentDidUpdate = () => {
             <img  src={data.img}/>
             </a>
           <h4 style={{marginTop:'-20px', marginBottom:'30px'}}>{data.name}</h4>
-          <p style={{marginTop:'-20px', marginBottom:'50px'}}>Created: {data.date}</p>
+          <p style={{marginTop:'-20px', marginBottom:'50px'}}>{data.date.replace("T"," at ").slice(0, -5)}</p>
           </div>
           })}
           

@@ -28,10 +28,10 @@ export default class FolderCont extends Component {
                 {this.state.folders.map((data) => {
                     return this.props.match.params.id == data._id ?
                         <div>
-
+                            <a href="http://localhost:3000/">Back to home</a>
 
                             <h1> Folder Name: {data.name}</h1>
-                            <h6>Created on: {data.date}</h6>
+                            <h6>Created on: {data.date.replace("T"," at ").slice(0, -5)}</h6>
 
 
                         </div> : null
