@@ -36,6 +36,15 @@ export default class App extends Component {
               />
             )}
         />
+        <Route
+            
+            path="/folder/:id/file"
+            render={props => (
+              <FolderCont
+                {...props}
+              />
+            )}
+        />
      
       </Router>
     </div>

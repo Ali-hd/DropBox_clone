@@ -32,8 +32,6 @@ export default class FolderCont extends Component {
 
                             <h1> Folder Name: {data.name}</h1>
                             <h6>Created on: {data.date.replace("T"," at ").slice(0, -5)}</h6>
-
-
                         </div> : null
                 }
                 )}

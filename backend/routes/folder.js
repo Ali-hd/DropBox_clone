@@ -3,7 +3,7 @@ const router = express.Router()
 
 
 const Folder = require('../models/Folder')
-
+// create
 router.post('/',(req,res)=>{
     const newFolder = {
         name: req.body.name
@@ -29,11 +29,22 @@ router.post('/',(req,res)=>{
     .catch(err=>res.send(err))
     
 })
-
+// display
 router.get('/',(req,res)=>{
     Folder.find()
     .then(folder=>res.json(folder))
     .catch(err=>res.send(err))
 })
+
+// delete 
+router.delete('/:id', (req,res) =>{
+    Folder.findByIdAndRemove(req.params.id, (err, data) => {
+        console.log("deleted");
+    })
+    .then(() => { res.json("successfully deleted") })
+    .catch(() => { res.json("error")})
+})
+
+
 
 module.exports = router
