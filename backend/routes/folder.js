@@ -29,6 +29,35 @@ router.post('/',(req,res)=>{
     .catch(err=>res.send(err))
     
 })
+
+//create folder within a folder
+router.post('/createfolder',(req,res)=>{
+    const newFolder = {
+        name: req.body.name,
+        parentid: req.body.parentid
+    }
+    console.log('new folder')
+    console.log(newFolder)
+
+    Folder.findOne({
+        name: req.body.name,
+        parentid: req.body.parentid
+    })
+    .then(folder =>{
+        //checking if folder name exist
+        if(!folder){
+            Folder.create(newFolder)
+            .then(folder=>res.send("folder created" + newFolder.name))
+            .catch(err=>res.send(err))
+            res.json({msg :"folder created success"})
+        }
+        else{
+            res.json({msg :"folder with that name already exist"})
+        }
+    })
+    .catch(err=>res.send(err))
+    
+})
 // display
 router.get('/',(req,res)=>{
     Folder.find()

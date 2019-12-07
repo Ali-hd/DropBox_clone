@@ -105,7 +105,8 @@ cancelEdit = (e) => {
         <div style={{ border: '2px solid black', backgroundColor: '#e8e7e6' }} className="ui four column doubling stackable grid center aligned container">
 
           {this.state.folders.map((data) => {
-            return <div className="column">
+            return data.parentid ? null : 
+            <div className="column">
               <a onClick={() => { this.setState({ folderName: data.name, folderId: data._id, folderImg: data.img, folderDate: data.date }) }} href={"/folder/" + this.state.folderId}>
 
                 <img src={data.img} />

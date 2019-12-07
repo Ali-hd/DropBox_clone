@@ -10,6 +10,9 @@ const mongoose = require('mongoose');
     },img:{
         type: String,
         default: 'https://i.imgur.com/CrS2iXw.png'
+    },parentid:{
+        type: String,
+        required: false
     }
  })
 
