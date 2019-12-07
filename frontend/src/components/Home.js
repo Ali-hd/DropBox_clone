@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button } from 'react-bootstrap'
 import axios from 'axios'
-import { Route } from "react-router-dom";
-import FolderCont from './FolderCont'
 
 export default class Home extends Component {
 
@@ -13,6 +11,9 @@ export default class Home extends Component {
     folderImg: "",
     folderDate: "",
     error: "",
+    updatedname: null,
+    showEdit: false,
+    editId: '',
   }
   onChange = (e) => {
     this.setState({
@@ -24,7 +25,7 @@ export default class Home extends Component {
     axios.post('http://localhost:5000/', this.state)
       .then(res => {
         console.log(this.state);
-        
+
         if (res.data.msg == "folder with that name already exist") {
           this.setState({ error: "Error: Folder with that name already exist, Please use a different name" })
         } else if (res.data.msg == "folder created success") {
@@ -35,9 +36,10 @@ export default class Home extends Component {
   }
 
   deleteFolder = (e) => {
+    console.log(e.target.id)
     axios.delete('http://localhost:5000/' + e.target.id)
-    .then(()=>{window.location.reload()})
-}
+      .then(() => { })
+  }
 
   componentDidMount = () => {
 
@@ -47,7 +49,7 @@ export default class Home extends Component {
         this.setState({ folders: res.data })
         console.log("data folders")
         console.log(this.state.folders)
-        
+
       })
       .catch(error => { console.log(error) })
   }
@@ -60,8 +62,28 @@ export default class Home extends Component {
       .catch(error => { console.log(error) })
 
   }
+  editOnChange = (e) => {
+    this.setState({
+        updatedname : e.target.value
+    })
+    console.log(this.state.updatedname)
+}
+editFile = (e) => {
+  axios.put('http://localhost:5000/' + e.target.id, this.state)
+  .then(res => {
+      console.log('updated folder name');})
+  .catch(err=>console.log(err))
+  this.setState({ showEdit: false, editId: '' })
+      
+}
+checkEdit = (e) => {
+  this.setState({ showEdit: true, editId: e.target.id })
+}
+cancelEdit = (e) => {
+  this.setState({ showEdit: false, editId: '' })
+}
 
-  
+
   render() {
 
     return (
@@ -91,10 +113,18 @@ export default class Home extends Component {
               <h4 style={{ marginTop: '-20px', marginBottom: '30px' }}>{data.name}</h4>
               <p style={{ marginTop: '-20px', marginBottom: '20px' }}>{data.date.replace("T", " at ").slice(0, -5)}</p>
               <div>
-            <button onClick={this.deleteFolder} id={data._id}  type="button" class="btn btn-secondary" >Delete</button>
-          </div>
+                <button onClick={this.deleteFolder} id={data._id} type="button" class="btn btn-danger" >Delete</button>
+                <button style={{ marginLeft: '5px' }} onClick={this.checkEdit} id={data._id} type="button" class="btn btn-secondary" >Edit</button>
+                {this.state.showEdit == true && this.state.editId == data._id ? <div>
+                  <Form style={{ marginTop: '10px', marginBottom: '5px' }}>
+                    <Form.Control type="name" name="edit" placeholder="Enter a new name" onChange={this.editOnChange} />
+                  </Form>
+                  <button onClick={this.editFile} id={data._id} type="button" class="btn btn-primary" >Confirm</button>
+                  <button style={{ marginLeft: '15px' }} onClick={this.cancelEdit} id={data._id} type="button" class="btn btn-secondary" >Cancel</button>
+                </div> : null}
+              </div>
             </div>
-            
+
           })}
         </div>
 

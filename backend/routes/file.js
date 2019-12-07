@@ -6,13 +6,15 @@ const File = require('../models/File')
 // create
 router.post('/createfile',(req,res)=>{
     const newFile = {
-        name: req.body.name
+        name: req.body.name,
+        parentid: req.body.parentid
     }
     console.log('new file')
     console.log(newFile)
 
     File.findOne({
-        name: req.body.name
+        name: req.body.name,
+        parentid: req.body.parentid
     })
     .then(file =>{
         //checking if file name exist
@@ -36,8 +38,16 @@ router.get('/',(req,res)=>{
     .catch(err=>res.send(err))
 })
 
+//update
+router.put('/:id', (req,res)=>{
+    File.findByIdAndUpdate(req.params.id, {name: req.body.updatedname})
+    .then(() => { res.json("successfully updated") })
+    .catch(() => { res.json("error")})
+})
+
 // delete 
 router.delete('/:id', (req,res) =>{
+    console.log(req.params.id)
     File.findByIdAndRemove(req.params.id, (err, data) => {
         console.log("deleted");
     })

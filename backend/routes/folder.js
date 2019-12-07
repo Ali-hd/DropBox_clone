@@ -36,6 +36,14 @@ router.get('/',(req,res)=>{
     .catch(err=>res.send(err))
 })
 
+//update
+router.put('/:id', (req,res)=>{
+    console.log("error editing")
+    Folder.findByIdAndUpdate(req.params.id, {name: req.body.updatedname})
+    .then(() => { res.json("successfully updated") })
+    .catch(() => { res.json("error")})
+})
+
 // delete 
 router.delete('/:id', (req,res) =>{
     Folder.findByIdAndRemove(req.params.id, (err, data) => {

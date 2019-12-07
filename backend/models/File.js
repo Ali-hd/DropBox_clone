@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema
+
  const FileSchema = new mongoose.Schema({
      name:{
          type: String,
@@ -10,9 +10,9 @@ const Schema = mongoose.Schema
     },img:{
         type: String,
         default: 'https://img.icons8.com/plasticine/100/000000/file.png'
-    },folder:{
-        type: Schema.Types.ObjectId,
-        ref: "Folder"
+    },parentid:{
+        type: String,
+        required: true
     }
  })
 
