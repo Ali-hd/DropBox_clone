@@ -6,6 +6,7 @@ import axios from 'axios'
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from './components/Home'
 import FolderCont from './components/FolderCont'
+import FileCont from './components/FileCont'
 
 
 export default class App extends Component {
@@ -32,6 +33,15 @@ export default class App extends Component {
             path="/folder/:id"
             render={props => (
               <FolderCont
+                {...props}
+              />
+            )}
+        />
+        <Route
+            
+            path="/folder/:id/file"
+            render={props => (
+              <FileCont
                 {...props}
               />
             )}

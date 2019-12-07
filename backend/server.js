@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv/config");
 const cors = require('cors')
+const fileRoutes = require('../backend/routes/file')
 
 
 app.use(express.json());
@@ -21,7 +22,7 @@ mongoose.connect(
 app.use(express.urlencoded({extended: true}))
 
 app.use('/', require('./routes/folder'))
-
+app.use("/file", fileRoutes)
 
 
 const PORT = process.env.PORT || 5000;
