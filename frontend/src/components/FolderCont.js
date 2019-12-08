@@ -20,6 +20,7 @@ export default class FolderCont extends Component {
         updatedname: null,
         showEdit: false,
         editId: '',
+        alldata:[],
     }
 
     onChange = (e) => {
@@ -81,13 +82,13 @@ export default class FolderCont extends Component {
 
     componentDidMount = () => {
 
-        // axios.all([axios.get('http://localhost:5000/file'),axios.get('http://localhost:5000/')]).then(
-        //     axios.spread((...res)=>{
-        //         this.setState({alldata})
-        //     })
-        // )
-        // console.log("created folders + files array")
-        // console.log(this.state.folders.concat(this.state.files))
+        axios.all([axios.get('http://localhost:5000/'),axios.get('http://localhost:5000/file')]).then(
+            axios.spread((...res)=>{
+                this.setState({alldata:res[0].data.concat(res[1].data)})
+            })
+        ).catch(err=>console.log(err))
+        console.log("created folders + files array")
+        console.log(this.state.alldata)
 
         axios.get('http://localhost:5000/file')
             .then(res => {
@@ -107,6 +108,12 @@ export default class FolderCont extends Component {
 
     }
     componentDidUpdate = () => {
+        axios.all([axios.get('http://localhost:5000/'),axios.get('http://localhost:5000/file')]).then(
+            axios.spread((...resp)=>{
+                this.setState({alldata:resp[0].data.concat(resp[1].data)})
+            })
+        ).catch(err=>console.log(err))
+        
         axios.get('http://localhost:5000/file')
             .then(res => {
                 this.setState({ files: res.data })
@@ -159,8 +166,8 @@ export default class FolderCont extends Component {
             <div>
                 <div>
 
-                    {this.state.folders.map((data) => {
-                        return this.props.match.params.id == data._id ?
+                    {this.state.alldata.map((data) => {
+                        return this.props.match.params.id === data._id && data.img === "https://i.imgur.com/CrS2iXw.png" ?
                             <div style={{ textAlign: 'center' }}>
                                 <br /><br />
                                 <h1><span style={{ fontSize: '26px' }}> Folder Name:</span> <span style={{ fontFamily: 'Serif', fontWeight: '500' }}>{data.name}</span></h1>
@@ -206,12 +213,10 @@ export default class FolderCont extends Component {
                         <h4 style={{ textAlign: 'center', marginTop: '-40px', marginBottom: '20px' }}>{this.state.error}</h4> : null}
 
                     <div style={{ border: '2px solid black', backgroundColor: '#e8e7e6' }} className="ui four column doubling stackable grid center aligned container">
-                        <div>
-
-                            {this.state.folders.map((data) => {
-                                return this.state.parentid == data.parentid ?
-
-                                    <div className="column">
+                                                
+                        {this.state.alldata.map((data)=>{
+                            return this.state.parentid === data.parentid && data.img === "https://i.imgur.com/CrS2iXw.png" ?
+                            <div className="column">
                                         <a onClick={() => { this.setState({ folderName: data.name, folderId: data._id, folderImg: data.img, folderDate: data.date }) }} href={"/folder/" + this.state.folderId}>
 
                                             <img width="155px" height="155px" src={data.img} />
@@ -222,7 +227,7 @@ export default class FolderCont extends Component {
                                         <div style={{marginBottom:'10px'}}>
                                             <button onClick={this.deleteFolder} id={data._id} type="button" class="btn btn-danger" >Delete</button>
                                             <button style={{ marginLeft: '5px' }} onClick={this.checkEdit} id={data._id} type="button" class="btn btn-secondary" >Edit</button>
-                                            {this.state.showEdit == true && this.state.editId == data._id ? <div>
+                                            {this.state.showEdit === true && this.state.editId === data._id ? <div>
                                                 <Form style={{ marginTop: '10px', marginBottom: '5px' }}>
                                                     <Form.Control type="name" name="edit" placeholder="Enter a new name" onChange={this.editOnChange} />
                                                 </Form>
@@ -230,15 +235,10 @@ export default class FolderCont extends Component {
                                                 <button style={{ marginLeft: '15px' }} onClick={this.cancelEdit} id={data._id} type="button" class="btn btn-secondary" >Cancel</button>
                                             </div> : null}
                                         </div>
-                                        {this.state.empty == true ? this.setState({ empty: false }) : null}
+                                        {this.state.empty === true ? this.setState({ empty: false }) : null}
                                     </div>
-                                    : null
-                            }
-                            )}
-                        </div>
-                        {this.state.files.map((data) => {
-                            return this.props.match.params.id == data.parentid ?
-                                <div className="column">
+                                    : this.props.match.params.id === data.parentid && data.img === 'https://img.icons8.com/plasticine/100/000000/file.png' ?
+                                    <div className="column">
 
                                     <a onClick={() => { this.setState({ fileName: data.name, fileId: data._id, fileImg: data.img, fileDate: data.date }) }} href={"/file/" + this.state.fileId}>
 
@@ -249,7 +249,7 @@ export default class FolderCont extends Component {
                                     <div style={{ marginBottom: '10px' }}>
                                         <button onClick={this.deleteFile} id={data._id} type="button" class="btn btn-danger" >Delete</button>
                                         <button style={{ marginLeft: '5px' }} onClick={this.checkEdit} id={data._id} type="button" class="btn btn-secondary" >Edit</button>
-                                        {this.state.showEdit == true && this.state.editId == data._id ? <div>
+                                        {this.state.showEdit === true && this.state.editId === data._id ? <div>
                                             <Form style={{ marginTop: '10px', marginBottom: '5px' }}>
                                                 <Form.Control type="name" name="edit" placeholder="Enter a new name" onChange={this.editOnChange} />
                                             </Form>
@@ -257,12 +257,11 @@ export default class FolderCont extends Component {
                                             <button style={{ marginLeft: '15px' }} onClick={this.cancelEdit} id={data._id} type="button" class="btn btn-secondary" >Cancel</button>
                                         </div> : null}
                                     </div>
-                                    {this.state.empty == true ? this.setState({ empty: false }) : null}
+                                    {this.state.empty === true ? this.setState({ empty: false }) : null}
                                 </div> : null
                         })}
-                        {this.state.empty == true ? <div><br /><br /><br /><h1>Folder is empty</h1><br /><br /><br /></div> : null}
+                        {this.state.empty === true ? <div><br /><br /><br /><h1>Folder is empty</h1><br /><br /><br /></div> : null}
                     </div>
-
                 </div>
                 <br /><br /><br /><br /><br />
                 <a style={{ textAlign: 'center', textDecoration: 'none' }} href="javascript:history.back()"><Button variant="light" block style={{ width: '300px', margin: '0 auto' }}>Go Back</Button></a>
